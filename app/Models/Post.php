@@ -19,7 +19,7 @@ class Post extends Model
      * @var array<int, string>
      */
     protected $guarded = [
-        'id'
+        'id',
     ];
 
     /**
