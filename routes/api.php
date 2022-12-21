@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('users/{user}/posts', [UserPostController::class, 'index']);
+    Route::get('users/{user}/posts', [UserPostController::class, 'index'])->can('view', 'user');
 });
