@@ -386,6 +386,7 @@ paths:
                     additionalProperties: false
                     required:
                       - id
+                      - user_id
                       - name
                       - slug
                       - content
@@ -394,6 +395,8 @@ paths:
                       - updated_at
                     properties:
                       id:
+                        type: integer
+                      user_id:
                         type: integer
                       name:
                         type: string
@@ -468,6 +471,17 @@ paths:
                 required:
                   - message
                   - errors
+              examples:
+                Example:
+                  value:
+                    message: The title field is required. (and 2 more errors)
+                    errors:
+                      title:
+                        - The title field is required.
+                      slug:
+                        - The slug has already been taken.
+                      content:
+                        - The content field is required.
       description: Create a new post
       requestBody:
         content:
