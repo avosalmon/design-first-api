@@ -238,6 +238,10 @@ paths:
                     type: string
                 required:
                   - message
+              examples:
+                Example:
+                  value:
+                    message: Unauthenticated.
         '403':
           description: Forbidden
           content:
@@ -250,6 +254,10 @@ paths:
                     type: string
                 required:
                   - message
+              examples:
+                Example:
+                  value:
+                    message: This action is unauthorized.
         '404':
           description: Not Found
           content:
@@ -262,6 +270,10 @@ paths:
                     type: string
                 required:
                   - message
+              examples:
+                Example:
+                  value:
+                    message: 'No query results for model [App\Models\User] 111'
         '422':
           description: Unprocessable Entity (WebDAV)
           content:
@@ -298,13 +310,11 @@ paths:
               examples:
                 Example:
                   value:
-                    message: The given data was invalid.
+                    message: The page must be an integer. (and 3 more errors)
                     errors:
                       page:
                         - The page must be an integer.
-                        - The selected page is invalid.
                       per_page:
-                        - The per page must be an integer.
                         - The selected per page is invalid.
                       sort_by:
                         - The selected sort by is invalid.
