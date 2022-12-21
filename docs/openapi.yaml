@@ -6,131 +6,258 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  '/users/{userId}':
+  '/users/{userId}/posts':
     parameters:
       - schema:
           type: integer
         name: userId
         in: path
         required: true
-        description: Id of an existing user.
     get:
-      summary: Get User Info by User ID
+      summary: Get posts for a user
       tags: []
       responses:
         '200':
-          description: User Found
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Get User Alice Smith:
-                  value:
-                    id: 142
-                    firstName: Alice
-                    lastName: Smith
-                    email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
+                type: object
+                additionalProperties: false
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: false
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        slug:
+                          type: string
+                        published_at:
+                          type: string
+                          format: date-time
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                      required:
+                        - id
+                        - title
+                        - slug
+                        - published_at
+                        - created_at
+                        - updated_at
+                  links:
+                    type: object
+                    additionalProperties: false
+                    required:
+                      - first
+                      - last
+                      - prev
+                      - next
+                    properties:
+                      first:
+                        type: string
+                      last:
+                        type: string
+                      prev:
+                        type:
+                          - string
+                          - 'null'
+                      next:
+                        type:
+                          - string
+                          - 'null'
+                  meta:
+                    type: object
+                    additionalProperties: false
+                    required:
+                      - current_page
+                      - from
+                      - last_page
+                      - path
+                      - per_page
+                      - to
+                      - total
+                      - links
+                    properties:
+                      current_page:
+                        type: integer
+                      from:
+                        type:
+                          - integer
+                          - 'null'
+                      last_page:
+                        type: integer
+                      path:
+                        type: string
+                      per_page:
+                        type: integer
+                      to:
+                        type:
+                          - integer
+                          - 'null'
+                      total:
+                        type: integer
+                      links:
+                        type: array
+                        items:
+                          type: object
+                          additionalProperties: false
+                          properties:
+                            url:
+                              type:
+                                - string
+                                - 'null'
+                            label:
+                              type: string
+                            active:
+                              type: boolean
+                          required:
+                            - url
+                            - label
+                            - active
+                required:
+                  - data
+                  - links
+                  - meta
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
         '404':
-          description: User Not Found
-      operationId: get-users-userId
-      description: Retrieve the information of the user with the matching user ID.
-  /user:
-    post:
-      summary: Create New User
-      operationId: post-user
-      responses:
-        '200':
-          description: User Created
+          description: Not Found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                additionalProperties: false
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      page:
+                        type: array
+                        items:
+                          type: string
+                      per_page:
+                        type: array
+                        items:
+                          type: string
+                      sort_by:
+                        type: array
+                        items:
+                          type: string
+                      sort_order:
+                        type: array
+                        items:
+                          type: string
+                required:
+                  - message
+                  - errors
               examples:
-                New User Bob Fellow:
+                Example:
                   value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
-        '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-              required:
-                - firstName
-                - lastName
-                - email
-                - dateOfBirth
-            examples:
-              Create User Bob Fellow:
-                value:
-                  firstName: Bob
-                  lastName: Fellow
-                  email: bob.fellow@gmail.com
-                  dateOfBirth: '1996-08-24'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
+                    message: The given data was invalid.
+                    errors:
+                      page:
+                        - The page must be an integer.
+                        - The selected page is invalid.
+                      per_page:
+                        - The per page must be an integer.
+                        - The selected per page is invalid.
+                      sort_by:
+                        - The selected sort by is invalid.
+                      sort_order:
+                        - The selected sort order is invalid.
+      operationId: get-users-userId-posts
+      description: Get paginated list of posts for a specific user
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+          description: Bearer token
+        - schema:
+            type: integer
+            default: 1
+          in: query
+          name: page
+          description: Page number to return
+        - schema:
+            type: integer
+            enum:
+              - 10
+              - 25
+              - 50
+              - 100
+            default: 10
+          in: query
+          name: per_page
+          description: Number of items displayed per page
+        - schema:
+            type: string
+            enum:
+              - id
+              - title
+              - slug
+              - published_at
+              - created_at
+              - updated_at
+            default: id
+          in: query
+          name: sort_by
+          description: Field to sort by
+        - schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+          in: query
+          name: sort_order
+          description: Whether to sort by ascending or descending
 components:
-  schemas:
-    User:
-      title: User
-      type: object
-      description: ''
-      examples:
-        - id: 142
-          firstName: Alice
-          lastName: Smith
-          email: alice.smith@gmail.com
-          dateOfBirth: '1997-10-31'
-          emailVerified: true
-          signUpDate: '2019-08-24'
-      properties:
-        id:
-          type: integer
-          description: Unique identifier for the given user.
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-          format: email
-        dateOfBirth:
-          type: string
-          format: date
-          example: '1997-10-31'
-        emailVerified:
-          type: boolean
-          description: Set to true if the user's email has been verified.
-        createDate:
-          type: string
-          format: date
-          description: The date that the user was created.
-      required:
-        - id
-        - firstName
-        - lastName
-        - email
-        - emailVerified
+  schemas: {}
