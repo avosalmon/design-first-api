@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
+use App\Http\Resources\PostCollection;
 use App\Models\Post;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request): PostCollection
     {
-        //
+        $posts = $request->user()->posts()->paginate();
+
+        return new PostCollection($posts);
     }
 
     /**
