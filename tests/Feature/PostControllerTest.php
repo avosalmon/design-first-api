@@ -12,7 +12,7 @@ it('creates a post', function () {
 
     Sanctum::actingAs($user, ['*']);
 
-    postJson('api/posts', [
+    postJson('posts', [
         'title' => 'My First Post',
         'slug' => 'my-first-post',
         'content' => 'This is my first post.',
@@ -36,7 +36,7 @@ it('creates a post', function () {
 });
 
 it('returns a 401 when user is not authenticated', function () {
-    postJson('api/posts', [
+    postJson('posts', [
         'title' => 'My First Post',
         'slug' => 'my-first-post',
         'content' => 'This is my first post.',
@@ -48,7 +48,7 @@ it('returns a 422 when invalid parameters are provided', function () {
 
     Sanctum::actingAs($user, ['*']);
 
-    postJson('api/posts', [
+    postJson('posts', [
         'title' => 1,
         'slug' => 123,
     ])->assertUnprocessable()
