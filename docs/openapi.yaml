@@ -498,5 +498,11 @@ paths:
                 - title
                 - slug
                 - content
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer token
 components:
   schemas: {}
