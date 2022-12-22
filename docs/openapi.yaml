@@ -1,8 +1,8 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
   title: Design-First API
   version: '1.0'
-  summary: A sample repository to practice Design-First API development in Laravel
+  description: A sample repository to practice Design-First API development in Laravel
 servers:
   - url: 'http://localhost:3000'
 paths:
@@ -40,6 +40,7 @@ paths:
                         published_at:
                           type: string
                           format: date-time
+                          nullable: true
                         created_at:
                           type: string
                           format: date-time
@@ -67,13 +68,11 @@ paths:
                       last:
                         type: string
                       prev:
-                        type:
-                          - string
-                          - 'null'
+                        type: string
+                        nullable: true
                       next:
-                        type:
-                          - string
-                          - 'null'
+                        type: string
+                        nullable: true
                   meta:
                     type: object
                     additionalProperties: false
@@ -90,9 +89,8 @@ paths:
                       current_page:
                         type: integer
                       from:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
+                        nullable: true
                       last_page:
                         type: integer
                       path:
@@ -100,9 +98,8 @@ paths:
                       per_page:
                         type: integer
                       to:
-                        type:
-                          - integer
-                          - 'null'
+                        type: integer
+                        nullable: true
                       total:
                         type: integer
                       links:
@@ -112,9 +109,8 @@ paths:
                           additionalProperties: false
                           properties:
                             url:
-                              type:
-                                - string
-                                - 'null'
+                              type: string
+                              nullable: true
                             label:
                               type: string
                             active:
@@ -368,5 +364,139 @@ paths:
           in: query
           name: sort_order
           description: Whether to sort by ascending or descending
+  /posts:
+    post:
+      summary: Create a post
+      operationId: post-posts
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  data:
+                    type: object
+                    additionalProperties: false
+                    required:
+                      - id
+                      - user_id
+                      - title
+                      - slug
+                      - content
+                      - published_at
+                      - created_at
+                      - updated_at
+                    properties:
+                      id:
+                        type: integer
+                      user_id:
+                        type: integer
+                      title:
+                        type: string
+                      slug:
+                        type: string
+                      content:
+                        type: string
+                      published_at:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      created_at:
+                        type: string
+                        format: date-time
+                      updated_at:
+                        type: string
+                        format: date-time
+                required:
+                  - data
+              examples:
+                Example 1:
+                  value:
+                    data:
+                      id: 1
+                      user_id: 10
+                      title: 2022 Recap
+                      slug: 2022-recap
+                      content: Architecto at quis itaque minima corrupti consequatur.
+                      published_at: '2019-08-24T14:15:22Z'
+                      created_at: '2019-08-24T14:15:22Z'
+                      updated_at: '2019-08-24T14:15:22Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              examples:
+                Example:
+                  value:
+                    message: Unauthenticated.
+        '422':
+          description: Unprocessable Entity (WebDAV)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      title:
+                        type: array
+                        items:
+                          type: string
+                      slug:
+                        type: array
+                        items:
+                          type: string
+                      content:
+                        type: array
+                        items:
+                          type: string
+                required:
+                  - message
+                  - errors
+              examples:
+                Example:
+                  value:
+                    message: The title field is required. (and 2 more errors)
+                    errors:
+                      title:
+                        - The title field is required.
+                      slug:
+                        - The slug has already been taken.
+                      content:
+                        - The content field is required.
+      description: Create a new post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                title:
+                  type: string
+                slug:
+                  type: string
+                content:
+                  type: string
+              required:
+                - title
+                - slug
+                - content
 components:
   schemas: {}
